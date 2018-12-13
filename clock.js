@@ -9,8 +9,8 @@ function clock() {
     let width = initialConfiguration.width,
         height = initialConfiguration.height,
         fields = [
-            {radius: 0.4, interval: d3.timeDay},//0.3-0.5
-            {radius: 0.55, interval: d3.timeHour},//0.55-0.65
+            {radius: 0.4, interval: d3.timeDay},//0.34-0.45
+            {radius: 0.55, interval: d3.timeHour},//0.5-0.6
             {radius: 0.7, interval: d3.timeMinute}//0.65-0.75
         ],
         color = initialConfiguration.color;
@@ -18,7 +18,7 @@ function clock() {
     function chart(selection) {
         selection.each(function () {
             const radius = Math.min(width, height) / 1.9;
-            const bodyRadius = radius / 23;
+            const lineWidth = radius * 0.05;
 
             const svg = selection
                 .append('svg')
@@ -31,18 +31,16 @@ function clock() {
 
             const arcBody = d3.arc()
                 .startAngle((d) => {
-                    return bodyRadius / (d.radius * radius);
+                    return 0;
+                    // return bodyRadius / (d.radius * radius);
                 })
                 .endAngle((d) => {
-                    return -Math.PI - bodyRadius / (d.radius * radius);
+                    // return -Math.PI - lineWidth / (d.radius * radius);
+                    return -Math.PI;
                 })
-                .innerRadius((d) => {
-                    return d.radius * radius - bodyRadius;
-                })
-                .outerRadius((d) => {
-                    return d.radius * radius + bodyRadius;
-                })
-                .cornerRadius(bodyRadius);
+                .innerRadius(d => d.radius * radius - lineWidth)
+                .outerRadius(d => d.radius * radius + lineWidth)
+                .cornerRadius(lineWidth);
 
 
             const body = clockChartSvg.append("g")
@@ -52,7 +50,7 @@ function clock() {
                 .enter()
                 .append("g");
 
-            body.append("path")
+            const paths = body.append("path")
                 .attr("d", arcBody);
 
             tick();

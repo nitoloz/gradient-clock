@@ -2,7 +2,6 @@ function clock() {
     const initialConfiguration = {
         width: 600,
         height: 600,
-        radius: 300,
         color: d3.scaleSequential(d3.interpolateRainbow).domain([0, 360])
     };
 
@@ -30,14 +29,8 @@ function clock() {
                 .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
             const arcBody = d3.arc()
-                .startAngle((d) => {
-                    return 0;
-                    // return bodyRadius / (d.radius * radius);
-                })
-                .endAngle((d) => {
-                    // return -Math.PI - lineWidth / (d.radius * radius);
-                    return -Math.PI;
-                })
+                .startAngle(0)
+                .endAngle(-Math.PI)
                 .innerRadius(d => d.radius * radius - lineWidth)
                 .outerRadius(d => d.radius * radius + lineWidth)
                 .cornerRadius(lineWidth);

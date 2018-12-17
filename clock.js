@@ -1,7 +1,7 @@
 function clock() {
     const initialConfiguration = {
-        width: 600,
-        height: 600,
+        width: 550,
+        height: 550,
         color: d3.scaleSequential(d3.interpolateRainbow).domain([0, 360])
     };
 
@@ -16,7 +16,7 @@ function clock() {
 
     function chart(selection) {
         selection.each(function () {
-            const radius = Math.min(width, height) / 1.9;
+            const radius = Math.min(width, height) / 2;
             const lineWidth = radius * 0.05;
 
             const svg = selection
@@ -30,7 +30,7 @@ function clock() {
 
             const arcBody = d3.arc()
                 .startAngle(0)
-                .endAngle(-Math.PI)
+                .endAngle(-2 * Math.PI + 0.05)
                 .innerRadius(d => d.radius * radius - lineWidth)
                 .outerRadius(d => d.radius * radius + lineWidth)
                 .cornerRadius(lineWidth);

@@ -1,7 +1,7 @@
 function clock() {
     const initialConfiguration = {
-        width: 550,
-        height: 550,
+        width: 518,
+        height: 518,
         color: d3.scaleSequential(d3.interpolateRainbow).domain([0, 360])
     };
 
@@ -22,7 +22,8 @@ function clock() {
             const svg = selection
                 .append('svg')
                 .attr('height', height)
-                .attr('width', width);
+                .attr('width', width)
+                .attr('transform','translate(42,32)');
 
             const clockChartSvg = svg
                 .append("g")

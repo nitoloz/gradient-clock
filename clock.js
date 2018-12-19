@@ -8,9 +8,9 @@ function clock() {
     let width = initialConfiguration.width,
         height = initialConfiguration.height,
         fields = [
-            {radius: 0.4, interval: d3.timeDay},//0.34-0.45
-            {radius: 0.55, interval: d3.timeHour},//0.5-0.6
-            {radius: 0.7, interval: d3.timeMinute}//0.65-0.75
+            {radius: 0.3, width: 0.149, interval: d3.timeDay},//0.34-0.45
+            {radius: 0.55, width: 0.099, interval: d3.timeHour},//0.5-0.6
+            {radius: 0.7, width: 0.05, interval: d3.timeMinute}//0.65-0.75
         ],
         color = initialConfiguration.color;
 
@@ -23,7 +23,7 @@ function clock() {
                 .append('svg')
                 .attr('height', height)
                 .attr('width', width)
-                .attr('transform','translate(41,31)');
+                .attr('transform', 'translate(41,31)');
 
             const clockChartSvg = svg
                 .append("g")
@@ -32,8 +32,8 @@ function clock() {
             const arcBody = d3.arc()
                 .startAngle(0)
                 .endAngle(-2 * Math.PI + 0.05)
-                .innerRadius(d => d.radius * radius - lineWidth)
-                .outerRadius(d => d.radius * radius + lineWidth)
+                .innerRadius(d => (d.radius - d.width) * radius)
+                .outerRadius(d => (d.radius + d.width) * radius)
                 .cornerRadius(lineWidth);
 
 

@@ -1,9 +1,14 @@
 function clock() {
+    const START_ANGLE = 0;
+    const END_ANGLE = -2 * Math.PI + 0.05;
+    const ARCS_NUMBER = 360;
+
     const initialConfiguration = {
         width: 520,
         height: 520,
-        color: d3.scaleSequential(d3.interpolateRainbow).domain([0, 360])
+        color: d3.scaleLinear().domain([0, ARCS_NUMBER]).range(['#031c2f','#01b0de'])
     };
+
 
     let width = initialConfiguration.width,
         height = initialConfiguration.height,
@@ -30,11 +35,15 @@ function clock() {
                 .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
             const arcBody = d3.arc()
-                .startAngle(0)
+                .startAngle(START_ANGLE)
                 .endAngle(-2 * Math.PI + 0.05)
                 .innerRadius(d => (d.radius - d.width) * radius)
                 .outerRadius(d => (d.radius + d.width) * radius)
                 .cornerRadius(lineWidth);
+
+            const arcSection = d3.arc()
+                .innerRadius(d => (d.radius - d.width) * radius)
+                .outerRadius(d => (d.radius + d.width) * radius);
 
 
             const body = clockChartSvg.append("g")
@@ -48,6 +57,11 @@ function clock() {
                 .attr("d", arcBody);
 
             tick();
+
+            paths.style('fill', function (d, i) {
+                return createGradient(d, i)
+            });
+
             d3.timer(tick);
 
             function tick() {
@@ -60,9 +74,35 @@ function clock() {
                         ? Math.round((now - start) / (end - start) * 360 * 100) / 50
                         : Math.round((now - start) / (end - start) * 360 * 100) / 100;
                 });
+                body.attr("transform", (d) => `rotate(${d.angle})`);
+            }
 
-                body.style("fill", (d) => color(d.angle))
-                    .attr("transform", (d) => `rotate(${d.angle})`);
+            function createGradient(d, index) {
+                let miniArcs = [];
+                let miniArcAngle = 2 * Math.PI / 360;
+
+                for (let j = 0; j < ARCS_NUMBER; j++) {
+                    let miniArc = {};
+                    miniArc.startAngle = START_ANGLE + (miniArcAngle * j);
+                    const arcEndAngle = miniArc.startAngle + miniArcAngle + 0.01;
+                    miniArc.endAngle = arcEndAngle > d.endAngle
+                        ? END_ANGLE
+                        : arcEndAngle;
+                    miniArc.radius = d.radius;
+                    miniArc.width = d.width;
+                    miniArcs.push(miniArc)
+                }
+
+                d3.select(body._groups[0][index])
+                    .selectAll('.mini-arc')
+                    .data(miniArcs)
+                    .enter()
+                    .append('path')
+                    .attr('class', 'arc')
+                    .attr('d', arcSection)
+                    .style("fill", (a, i) => color(i));
+
+                return "none"
             }
         })
     }

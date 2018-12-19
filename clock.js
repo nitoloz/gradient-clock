@@ -2,20 +2,21 @@ function clock() {
     const START_ANGLE = 0;
     const END_ANGLE = -2 * Math.PI + 0.05;
     const ARCS_NUMBER = 360;
+    const GRADIENT_ARC_ANGLE = 2 * Math.PI / 360;
 
     const initialConfiguration = {
         width: 520,
         height: 520,
-        color: d3.scaleLinear().domain([0, ARCS_NUMBER]).range(['#031c2f','#01b0de'])
+        color: d3.scaleLinear().domain([0, ARCS_NUMBER]).range(['#031c2f', '#01b0de'])
     };
 
 
     let width = initialConfiguration.width,
         height = initialConfiguration.height,
         fields = [
-            {radius: 0.3, width: 0.149, interval: d3.timeDay},//0.34-0.45
-            {radius: 0.55, width: 0.099, interval: d3.timeHour},//0.5-0.6
-            {radius: 0.7, width: 0.05, interval: d3.timeMinute}//0.65-0.75
+            {radius: 0.3, width: 0.149, interval: d3.timeDay},
+            {radius: 0.55, width: 0.099, interval: d3.timeHour},
+            {radius: 0.7, width: 0.05, interval: d3.timeMinute}
         ],
         color = initialConfiguration.color;
 
@@ -58,9 +59,7 @@ function clock() {
 
             tick();
 
-            paths.style('fill', function (d, i) {
-                return createGradient(d, i)
-            });
+            paths.style('fill', (d, i) => createGradient(d, i));
 
             d3.timer(tick);
 
@@ -79,12 +78,11 @@ function clock() {
 
             function createGradient(d, index) {
                 let miniArcs = [];
-                let miniArcAngle = 2 * Math.PI / 360;
 
                 for (let j = 0; j < ARCS_NUMBER; j++) {
                     let miniArc = {};
-                    miniArc.startAngle = START_ANGLE + (miniArcAngle * j);
-                    const arcEndAngle = miniArc.startAngle + miniArcAngle + 0.01;
+                    miniArc.startAngle = START_ANGLE + (GRADIENT_ARC_ANGLE * j);
+                    const arcEndAngle = miniArc.startAngle + GRADIENT_ARC_ANGLE + 0.01;
                     miniArc.endAngle = arcEndAngle > d.endAngle
                         ? END_ANGLE
                         : arcEndAngle;
